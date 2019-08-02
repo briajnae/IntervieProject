@@ -13,14 +13,14 @@ public class ServiceLayerTest {
     ProductsClient productsClient;
     TaxClient taxClient;
 
-    @Before
-    public void setUp(){
-        setUpProductsMock();
-        setUpTaxesMock();
-        serviceLayer = new PriceCalculationServiceLayer(taxClient,productsClient);
-    }
-
-    private void setUpProductsMock() {
-        productsClient = mock();
-    }
+//    @Before
+//    public void setUp(){
+//        setUpProductsMock();
+//        setUpTaxesMock();
+//        serviceLayer = new PriceCalculationServiceLayer(taxClient,productsClient);
+//    }
+//
+//    private void setUpProductsMock() {
+//        productsClient = mock();
+//    }
 }

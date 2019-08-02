@@ -27,37 +27,32 @@ public class PriceCalculationServiceLayer {
         this.productsClient = productsClient;
     }
 
-
-
     public PriceCalculationViewModel getCalculation(int id, int quantity, boolean exempt){
 
         NumberFormat format = new DecimalFormat("#.##");
 
-          Product product = productsClient.getProductByProductId(id);
-          Tax tax =taxClient.getTaxByCategory(product.getCategory());
+        Product product = productsClient.getProductByProductId(id);
+        Tax tax = taxClient.getTaxByCategory(product.getCategory());
 
+        double totalTaxCal = (product.getPricePerUnit() * quantity) * (tax.getTaxPercent() / 100);
 
-          double totalTaxCal = (product.getPricePerUnit() * quantity) * (tax.getTaxPercent() / 100);
+        if(exempt){
+            totalTaxCal = 0;
+        }
 
-          if(exempt){
-             totalTaxCal = 0;
-          }
+        double totalCal = (product.getPricePerUnit() * quantity) + totalTaxCal;
 
-          double totalCal = (product.getPricePerUnit() * quantity) + totalTaxCal;
+        PriceCalculationViewModel pvm = new PriceCalculationViewModel();
+        pvm.setProductId(Integer.toString(id));
+        pvm.setProductDescription(product.getProductDescription());
+        pvm.setQuantity(quantity);
+        pvm.setPricePerUnit(product.getPricePerUnit());
+        pvm.setTaxPercent(tax.getTaxPercent());
+        pvm.setTotalTax(Double.parseDouble(format.format(totalTaxCal)));
+        pvm.setTotal(Double.parseDouble(format.format(totalCal)));
 
-          PriceCalculationViewModel pvm = new PriceCalculationViewModel();
-          pvm.setProductId(Integer.toString(id));
-          pvm.setProductDescription(product.getProductDescription());
-          pvm.setQuantity(quantity);
-          pvm.setPricePerUnit(product.getPricePerUnit());
-          pvm.setTaxPercent(tax.getTaxPercent());
-          pvm.setTotalTax(Double.parseDouble(format.format(totalTaxCal)));
-          pvm.setTotal(Double.parseDouble(format.format(totalCal)));
-
-          return pvm;
+        return pvm;
 
     }
-
-
 
 }

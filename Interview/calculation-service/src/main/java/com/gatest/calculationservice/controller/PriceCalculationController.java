@@ -18,13 +18,8 @@ public class PriceCalculationController {
     }
 
     @GetMapping(value = "api/price/product/{product_id}")
-    PriceCalculationViewModel getPrice(@RequestParam int quantity, @PathVariable("product_id") int id, @RequestParam(value = "exempt", required = false) boolean exempt){
+    PriceCalculationViewModel getCalculation(@RequestParam int quantity, @PathVariable("product_id") int id, @RequestParam(value = "exempt", required = false) boolean exempt){
         return serviceLayer.getCalculation(id,quantity,exempt);
     }
-
-//    PriceCalculationViewModel getPriceAndTaxOnly(@RequestParam int quantity, @PathVariable("product_id") int id){
-//        return serviceLayer.getPriceAndTaxCalcOnly(id,quantity);
-//    }
-
 
 }
