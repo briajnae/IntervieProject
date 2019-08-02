@@ -6,10 +6,13 @@ import com.gatest.calculationservice.util.model.Product;
 import com.gatest.calculationservice.util.model.Tax;
 import com.gatest.calculationservice.viewmodel.PriceCalculationViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
+
+import org.springframework.stereotype.Component;
+
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Objects;
 
 @Component
@@ -24,32 +27,37 @@ public class PriceCalculationServiceLayer {
         this.productsClient = productsClient;
     }
 
-    public PriceCalculationViewModel getCalculation(int id, int quantity){
-        try{
+
+
+    public PriceCalculationViewModel getCalculation(int id, int quantity, boolean exempt){
+
+        NumberFormat format = new DecimalFormat("#.##");
+
           Product product = productsClient.getProductByProductId(id);
           Tax tax =taxClient.getTaxByCategory(product.getCategory());
 
-          double totalTaxCal = product.getPricePerUnit() * (tax.getTaxPercent() / 100);
-          double totalCal = product.getPricePerUnit() + totalTaxCal;
+
+          double totalTaxCal = (product.getPricePerUnit() * quantity) * (tax.getTaxPercent() / 100);
+
+          if(exempt){
+             totalTaxCal = 0;
+          }
+
+          double totalCal = (product.getPricePerUnit() * quantity) + totalTaxCal;
 
           PriceCalculationViewModel pvm = new PriceCalculationViewModel();
-          pvm.setProductId(product.getProductId());
+          pvm.setProductId(Integer.toString(id));
           pvm.setProductDescription(product.getProductDescription());
           pvm.setQuantity(quantity);
           pvm.setPricePerUnit(product.getPricePerUnit());
           pvm.setTaxPercent(tax.getTaxPercent());
-          pvm.setTotalTax(totalTaxCal);
-          pvm.setTotal(totalCal);
+          pvm.setTotalTax(Double.parseDouble(format.format(totalTaxCal)));
+          pvm.setTotal(Double.parseDouble(format.format(totalCal)));
 
           return pvm;
 
-        }catch (EmptyResultDataAccessException e){
-            System.out.println(e.getMessage());
-            return null;
-        }
-
-
     }
+
 
 
 }

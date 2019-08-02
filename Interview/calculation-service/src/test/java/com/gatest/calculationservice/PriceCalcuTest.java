@@ -38,7 +38,6 @@ public class PriceCalcuTest {
         Tax testTax = new Tax();
         testTax.setCategory(tax.getCategory());
         testTax.setTaxPercent(tax.getTaxPercent());
-        testTax.setTaxExempt(tax.getTaxPercent());
 
         assertEquals(testTax, tax);
     }
